@@ -10,11 +10,22 @@ const Launcher = () => {
     const [maxTables, setMaxTables] = useState(1);
     const [maxGames, setMaxGames] = useState('フリー');
     const [mode, setMode] = useState('normal');
+    const [activeMenu, setActiveMenu] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         // localStorage から大会一覧を取得
         setTournaments(StorageService.listTournaments());
+    }, []);
+
+    // ★ 一覧を再取得して画面を更新する関数
+    const refreshList = () => {
+        const list = StorageService.listTournaments(); // ストレージから最新一覧を取得
+        setTournaments(list); // Stateを更新することで再レンダリングを発生させる
+    };
+
+    useEffect(() => {
+        refreshList(); // 初回読み込み時
     }, []);
 
     const handleCreate = (e) => {
@@ -25,6 +36,22 @@ const Launcher = () => {
             navigate(`/t/${filename}/dashboard`);
         } catch (err) {
             alert("大会の作成に失敗しました。");
+        }
+    };
+
+    // ★ 削除処理
+    const handleDelete = (e, targetName) => {
+        e.stopPropagation(); // ボタンクリック時のイベント伝播を止める
+        
+        if (window.confirm(`大会「${targetName}」を削除してもよろしいですか？`)) {
+            // 1. 物理削除を実行
+            StorageService.deleteTournament(targetName); 
+            
+            // 2. メニューを閉じる
+            setActiveMenu(null); 
+            
+            // 3. 一覧を最新状態に更新（これが実質的なリロードになります）
+            refreshList(); 
         }
     };
 
@@ -58,11 +85,38 @@ const Launcher = () => {
             {tournaments.length > 0 && (
                 <>
                     <h3 className="sub-title">過去の大会</h3>
-                    <div className="card">
+                    <div className="card history-list">
                         {tournaments.map(f => (
-                            <button key={f} className="btn-history" onClick={() => navigate(`/t/${f}/dashboard`)}>
-                                {f}
-                            </button>
+                            <div key={f} className="history-item-container">
+                                <button className="btn-history" onClick={() => navigate(`/t/${f}/dashboard`)}>
+                                    {f}
+                                </button>
+                                
+                                {/* ★ メニューボタン（⋮）の追加 */}
+                                <div className="menu-container">
+                                    <button 
+                                        className="btn-menu-trigger" 
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setActiveMenu(activeMenu === f ? null : f);
+                                        }}
+                                    >
+                                        ⋮
+                                    </button>
+                                    
+                                    {/* ★ 削除ボタン（メニューが開いている時だけ表示） */}
+                                    {activeMenu === f && (
+                                        <div className="dropdown-menu">
+                                            <button 
+                                                className="btn-delete" 
+                                                onClick={(e) => handleDelete(e, f)}
+                                            >
+                                                削除
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         ))}
                     </div>
                 </>

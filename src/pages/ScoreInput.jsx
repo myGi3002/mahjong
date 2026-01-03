@@ -17,6 +17,13 @@ const ScoreInput = () => {
     }, [filename, roundNum, tableId]);
 
     if (!data) return <div>読み込み中...</div>;
+    const round = data.rounds[roundNum - 1];
+    const table = round.tables.find(t => t.table_id == tableId);
+    const playerIds = table.player_ids;
+
+    // ★ IDから名前を引くためのマップを作成
+    const playerMap = Object.fromEntries(data.players.map(p => [p.id, p]));
+
     const settings = data.tournament_info.settings;
     const targetTotal = (settings.start_pts * 4);
 
@@ -45,8 +52,19 @@ const ScoreInput = () => {
                 <p className="alert-text">※100点単位で入力（例：30,000点 → 300）</p>
                 {scores.map((s, i) => (
                     <div key={i} className="input-row">
-                        <label>{['東','南','西','北'][i]}</label>
-                        <input type="number" value={s} onChange={e => handleInput(i, e.target.value)} className="large-score-input" />
+                        {/* ★ 風の右側に名前を表示するように変更 */}
+                        <label>
+                            <span className="wind">{['東','南','西','北'][i]}</span>
+                            <span className="player-name-label">
+                                {playerMap[playerIds[i]]?.name || "不明"}
+                            </span>
+                        </label>
+                        <input 
+                            type="number" 
+                            value={s} 
+                            onChange={e => handleInput(i, e.target.value)} 
+                            className="large-score-input" 
+                        />
                     </div>
                 ))}
                 <div className="total-display">合計: {currentTotal} / {targetTotal}</div>

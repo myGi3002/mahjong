@@ -97,7 +97,45 @@ body {
     cursor: pointer;
     text-align: left;
 }
+.history-item-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin-bottom: 8px;
+}
+.menu-container {
+    position: relative;
+    margin-left: 8px;
+}
 
+.btn-menu-trigger {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 10px;
+    color: #666;
+}
+
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 40px;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    z-index: 10;
+}
+
+.btn-delete {
+    background: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    border-radius: 4px;
+}
 /* --- 入力フォーム --- */
 .input-group { margin-bottom: 20px; }
 .simple-label { display: block; font-size: 0.9em; color: #666; margin-bottom: 5px; }
@@ -177,7 +215,77 @@ input[type="text"], input[type="number"] {
 }
 .team-badge.red { background: var(--red-team); }
 .team-badge.white { background: var(--white-team); }
+/* 警告カードのスタイル */
+.alert-card {
+    border: 2px solid #ff4d4f; /* 赤い枠線 */
+    background: #fff2f0;      /* 薄い赤の背景 */
+    padding: 15px 20px;
+}
 
+.alert-title {
+    color: #cf1322;
+    margin-top: 0;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.alert-list {
+    margin: 10px 0;
+    padding-left: 20px;
+    color: #555;
+    font-size: 0.9em;
+    line-height: 1.6;
+}
+
+.alert-list li {
+    margin-bottom: 4px;
+}
+
+.hint-text.small {
+    font-size: 0.8em;
+    margin-top: 10px;
+    color: #888;
+}
+/* プレビュー用の名前行レイアウト */
+.player-tag-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.player-tag-row:last-child {
+    border-bottom: none;
+}
+
+/* 小さい風の文字 */
+.mini-wind {
+    font-size: 0.95em;
+    color: #999;
+    font-weight: bold;
+    width: 1.2em;
+    text-align: center;
+}
+
+/* 小さい名前の文字 */
+.mini-name {
+    font-size: 1.05em;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 既存の player-names-list の調整 */
+.player-names-list {
+    display: flex;
+    flex-direction: column;
+    padding: 6px 10px; /* 余白を調整 */
+    gap: 2px;
+}
 /* --- 卓カード (RoundTables) --- */
 .round-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .nav-arrow {
@@ -199,15 +307,90 @@ input[type="text"], input[type="number"] {
 .recorded .table-header { background: var(--primary); color: white; }
 
 .seat-list { padding: 10px 20px; }
-.seat-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
-.wind { display: inline-block; width: 25px; color: #999; font-weight: bold; }
-.p-score { font-weight: bold; color: var(--primary); background: var(--primary-light); padding: 2px 8px; border-radius: 4px; }
-
-/* --- 点数入力 (ScoreInput) --- */
-.large-score-input {
-    width: 120px; font-size: 24px; padding: 10px; text-align: right;
-    border: 2px solid #ddd; border-radius: 8px;
+.seat-row {
+    display: grid;
+    /* 風(30px) / 名前(残り全部) / スコア(60px) の3カラム */
+    grid-template-columns: 40px 1fr auto; 
+    align-items: center;
+    padding: 12px 0; /* 上下の間隔を広げて見やすく */
+    border-bottom: 1px solid #f0f0f0;
+    gap: 10px;
 }
+.wind { width: auto; /* 固定幅解除 */ color: #666; font-weight: bold; text-align: center; }
+.p-name {
+    text-align: left;
+    font-size: 1.05em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; /* 名前が長くても改行させない */
+}
+.p-score {
+    min-width: 60px;
+    text-align: right;
+    font-weight: bold;
+    color: var(--primary);
+    background: var(--primary-light);
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+/* --- RoundTables: 上部タブのスタイル --- */
+.round-selector-tabs {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+}
+
+.tab-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.tab-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    font-weight: bold;
+}
+/* --- 点数入力 (ScoreInput) --- */
+/* 点数入力画面の行レイアウト */
+.score-input-page .input-row {
+    display: grid;
+    /* 風(60px) / 名前(残り全部) / 入力欄(220px) */
+    grid-template-columns: 70px 1fr 220px;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 10px;
+    background: #fcfcfc;
+    border-radius: 8px;
+}
+
+.score-input-page label {
+    display: contents; /* labelタグの影響を消してgridに従わせる */
+}
+.player-name-label {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; /* 名前が長くても改行しない */
+}
+.large-score-input {
+    width: 100%; /* gridのカラム(120px)いっぱいに広げる */
+    font-size: 20px;
+    padding: 8px;
+    text-align: right;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+}
+
 .large-score-input:focus { border-color: var(--primary); outline: none; background: #f0f8f0; }
 .alert-text {
     background: #fff3f3; color: var(--red-team); padding: 10px;
@@ -276,7 +459,6 @@ input[type="text"], input[type="number"] {
     text-align: center;
 }
 
-/* index.css に追加 */
 .round-progress-grid {
     display: flex;
     flex-wrap: wrap;
@@ -284,11 +466,21 @@ input[type="text"], input[type="number"] {
     margin-top: 10px;
 }
 
-.round-progress-block {
+/* 回戦ごとの枠（ベース） */
+.round-progressing-block {
     background: #f0f0f0;
-    padding: 10px;
+    padding: 12px;
     border-radius: 8px;
     min-width: 150px;
+    border: 1px solid #ddd;
+    transition: all 0.3s ease;
+}
+
+/* ★ 回戦完了時：ボタン(recorded)と同じ配色を適用 */
+.round-progressing-block.finished-round {
+    background: #e8f5e9;       /* recordedと同じ背景色 */
+    border: 2px solid #4caf50;    /* recordedと同じ枠線色 */
+    box-shadow: 0 2px 8px rgba(82, 196, 26, 0.1);
 }
 
 .round-link-title {
@@ -297,6 +489,11 @@ input[type="text"], input[type="number"] {
     margin-bottom: 8px;
     color: #333;
     text-decoration: none;
+}
+
+/* ★ 回戦完了時：タイトルの文字色もrecordedに合わせる */
+.finished-round .round-link-title {
+    color: #2e7d32;            /* recordedと同じ文字色 */
 }
 
 .dashboard-table-btns {
@@ -315,8 +512,130 @@ input[type="text"], input[type="number"] {
     color: #333;
 }
 
+/* 卓ボタンの完了スタイル */
 .dash-table-btn.recorded {
     background: #e8f5e9;
     border-color: #4caf50;
     color: #2e7d32;
 }
+
+.finished-mark {
+    color: #52c41a;
+    font-weight: bold;
+    margin-left: 5px;
+}
+/* RoundPrepare 専用のレイアウト */
+.round-prepare { padding-bottom: 100px; }
+
+.config-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.round-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-left: 5px solid var(--primary);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.round-number-title {
+    margin-top: 0;
+    color: var(--primary);
+    font-size: 1.2em;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.preview-tables-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.table-mini-card {
+    border: 1px solid #eee;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.table-mini-header {
+    background: #f5f5f5;
+    font-size: 0.8em;
+    text-align: center;
+    padding: 4px;
+    font-weight: bold;
+}
+
+.player-names-list {
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    gap: 4px;
+}
+
+.player-tag {
+    font-size: 0.85em;
+    background: #f9f9f9;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+.resting-info {
+    margin-top: 15px;
+    font-size: 0.85em;
+    color: #888;
+    font-style: italic;
+}
+
+.hint-text.info {
+    color: var(--primary);
+    background: var(--primary-light);
+    padding: 5px 15px;
+    border-radius: 20px;
+}
+/* プレイヤー名のリンクスタイル */
+.player-link-btn {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: bold;
+    border-bottom: 1px dashed var(--primary);
+}
+
+/* 着順分布のレイアウト */
+.rank-dist {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+}
+.rank-box {
+    text-align: center;
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    width: 20%;
+}
+.rank-label { font-size: 0.8em; color: #666; }
+.rank-value { font-size: 1.2em; font-weight: bold; color: var(--primary); }
+
+/* 履歴テーブル */
+.history-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9em; }
+.history-table th { border-bottom: 1px solid #eee; padding: 8px; text-align: center; }
+.history-table td { padding: 10px 5px; border-bottom: 1px solid #f9f9f9; text-align: center; }
+
+.rank-badge {
+    display: inline-block; width: 24px; height: 24px; line-height: 24px;
+    border-radius: 50%; color: white; font-weight: bold;
+}
+.rank-badge.r1 { background: #ffd700; color: #333; } /* 金 */
+.rank-badge.r2 { background: #c0c0c0; color: #333; } /* 銀 */
+.rank-badge.r3 { background: #cd7f32; }             /* 銅 */
+.rank-badge.r4 { background: #666; }
+
+.opp-link { color: #666; text-decoration: none; font-size: 0.9em; }
+.opp-link:hover { text-decoration: underline; }

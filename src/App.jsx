@@ -2,6 +2,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Launcher from './pages/Launcher';
 import Dashboard from './pages/Dashboard';
+import PlayerDetail from './pages/PlayerDetail';
 import RoundPrepare from './pages/RoundPrepare'; // 新しく追加
 import RoundTables from './pages/RoundTables';
 import ScoreInput from './pages/ScoreInput';
@@ -23,6 +24,9 @@ function App() {
 
                     {/* 2. 大会運営ダッシュボード */}
                     <Route path="/t/:filename/dashboard" element={<Dashboard />} />
+
+                    {/* ★ 追加：プレイヤー詳細画面 */}
+                    <Route path="/t/:filename/player/:playerId" element={<PlayerDetail />} />
 
                     {/* 3. 卓組みプレビュー（対局開始前の最終確認） */}
                     <Route path="/t/:filename/round/prepare" element={<RoundPrepare />} />

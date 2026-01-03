@@ -74,7 +74,7 @@ const RoundTables = () => {
                                 {table.player_ids.map((pid, i) => (
                                     <div key={pid} className="seat-row">
                                         <span className="wind">{['東','南','西','北'][i]}</span>
-                                        <span>{playerMap[pid]?.name || "不明"}</span>
+                                        <span className="p-name">{playerMap[pid]?.name || "不明"}</span>
                                         {table.is_recorded && <span className="p-score">{table.points[i]}</span>}
                                     </div>
                                 ))}
@@ -85,6 +85,9 @@ const RoundTables = () => {
             </div>
 
             <div className="footer-controls">
+                <Link to={`/t/${filename}/round/prepare`} className="btn-outline" style={{textAlign: 'center', textDecoration: 'none', marginBottom: '10px'}}>
+                    卓組みを見る
+                </Link>
                 <Link to={`/t/${filename}/dashboard`} className="btn-secondary">TOPに戻る</Link>
             </div>
         </div>
