@@ -1,4 +1,7 @@
 /* frontend/src/styles/index.css */
+* {
+    box-sizing: border-box;
+}
 :root {
     --primary: #2e7d32;         /* フォレストグリーン */
     --primary-dark: #1b5e20;
@@ -387,11 +390,13 @@ input[type="text"], input[type="number"] {
 }
 .large-score-input {
     width: 100%; /* gridのカラム(120px)いっぱいに広げる */
+    max-width: 100%;   /* 親要素を絶対に超えない */
     font-size: 20px;
     padding: 8px;
     text-align: right;
     border: 2px solid #ddd;
     border-radius: 6px;
+    -webkit-appearance: none;
 }
 
 .large-score-input:focus { border-color: var(--primary); outline: none; background: #f0f8f0; }
