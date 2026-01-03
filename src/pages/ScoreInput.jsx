@@ -1,5 +1,5 @@
 // src/pages/ScoreInput.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { StorageService } from '../services/StorageService';
 
@@ -8,6 +8,8 @@ const ScoreInput = () => {
     const navigate = useNavigate();
     const [data, setData] = useState(null);
     const [scores, setScores] = useState(['', '', '', '']);
+    // ★ 入力ボックスの参照を保持するための配列
+    const inputRefs = useRef([]);
 
     useEffect(() => {
         const tData = StorageService.getTournament(filename);
@@ -38,6 +40,20 @@ const ScoreInput = () => {
         setScores(newScores);
     };
 
+    // ★ エンターキーが押された時の処理
+    const handleKeyDown = (e, i) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // 改行やフォーム送信を防ぐ
+            if (i < 3) {
+                // 次の入力ボックスにフォーカスを移動
+                inputRefs.current[i + 1]?.focus();
+            } else {
+                // 最後の人の場合はキーボードを閉じる
+                inputRefs.current[i]?.blur();
+            }
+        }
+    };
+
     const handleSave = () => {
         StorageService.submitScore(filename, parseInt(roundNum), parseInt(tableId), scores.map(s => Number(s)*100));
         navigate(`/t/${filename}/round/${roundNum}`);
@@ -61,9 +77,12 @@ const ScoreInput = () => {
                         </label>
                         <input 
                             type="number" 
+                            ref={el => inputRefs.current[i] = el} // ★ 参照を登録
                             value={s} 
                             onChange={e => handleInput(i, e.target.value)} 
+                            onKeyDown={e => handleKeyDown(e, i)} // ★ イベントを追加
                             className="large-score-input" 
+                            placeholder="0"
                         />
                     </div>
                 ))}
