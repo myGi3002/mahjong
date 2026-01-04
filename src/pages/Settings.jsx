@@ -47,6 +47,26 @@ const Settings = () => {
                     <div className="shizumi-container">
                         <h3 className="sub-title">沈みウマ詳細設定</h3>
                         {/* ... (沈みウマの入力グリッド) */}
+                        <div className="shizumi-flex-wrapper">
+                            {["1", "2", "3"].map(count => (
+                                <div key={count} className="shizumi-column">
+                                    <label className="shizumi-label">{count}人浮き</label>
+                                    <div className="shizumi-grid">
+                                        {[0, 1, 2, 3].map(i => (
+                                            <div key={i} className="shizumi-input-group">
+                                                <span className="rank-label">{i + 1}位</span>
+                                                <input 
+                                                    type="number" 
+                                                    className="shizumi-small-input"
+                                                    value={settings.shizumi_uma?.[count]?.[i] || 0}
+                                                    onChange={e => handleShizumiChange(count, i, e.target.value)} 
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 )}
 
