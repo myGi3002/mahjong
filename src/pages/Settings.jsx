@@ -29,36 +29,54 @@ const Settings = () => {
         <div className="settings-page">
             <h1 className="page-title">詳細設定</h1>
             <div className="card">
-                <FloatingLabelSelect label="ウマ設定" value={settings.uma_type} onChange={e => setSettings({...settings, uma_type: e.target.value})}
-                    options={[{label:'5-10',value:'5-10'},{label:'10-20',value:'10-20'},{label:'10-30',value:'10-30'},{label:'20-30',value:'20-30'},{label:'沈みウマ',value:'shizumi'},]} />
+                {/* ウマ設定 (FloatingLabelSelect) */}
+                <FloatingLabelSelect 
+                    label="ウマ設定" 
+                    value={settings.uma_type} 
+                    onChange={e => setSettings({...settings, uma_type: e.target.value})}
+                    options={[
+                        {label:'5-10',value:'5-10'},
+                        {label:'10-20',value:'10-20'},
+                        {label:'10-30',value:'10-30'},
+                        {label:'20-30',value:'20-30'},
+                        {label:'沈みウマ',value:'shizumi'},
+                    ]} 
+                />
+
                 {settings.uma_type === "shizumi" && (
                     <div className="shizumi-container">
                         <h3 className="sub-title">沈みウマ詳細設定</h3>
-                        <div className="shizumi-flex-wrapper">
-                            {["1", "2", "3"].map(count => (
-                                <div key={count} className="shizumi-column">
-                                    <label className="shizumi-label">{count}人浮き</label>
-                                    <div className="shizumi-grid">
-                                        {[0, 1, 2, 3].map(i => (
-                                            <div key={i} className="shizumi-input-group">
-                                                <span className="rank-label">{i + 1}位</span>
-                                                <input 
-                                                    type="number" 
-                                                    className="shizumi-small-input"
-                                                    value={settings.shizumi_uma?.[count]?.[i] || 0}
-                                                    onChange={e => handleShizumiChange(count, i, e.target.value)} 
-                                                />
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                        {/* ... (沈みウマの入力グリッド) */}
                     </div>
                 )}
-                <div className="input-row"><label>持ち点</label><input type="number" value={settings.start_pts} onChange={e=>setSettings({...settings, start_pts: Number(e.target.value)})} /></div>
-                <div className="input-row"><label>返し点</label><input type="number" value={settings.return_pts} onChange={e=>setSettings({...settings, return_pts: Number(e.target.value)})} /></div>
-                <button onClick={handleSave} className="btn-primary">設定を保存して再計算</button>
+
+                {/* 持ち点・返し点の設定エリア */}
+                <div className="settings-extra-fields">
+                    <div className="input-group">
+                        <label className="simple-label">持ち点</label>
+                        <input 
+                            type="number" 
+                            value={settings.start_pts} 
+                            onChange={e => setSettings({...settings, start_pts: Number(e.target.value)})} 
+                        />
+                    </div>
+
+                    <div className="input-group">
+                        <label className="simple-label">返し点</label>
+                        <input 
+                            type="number" 
+                            value={settings.return_pts} 
+                            onChange={e => setSettings({...settings, return_pts: Number(e.target.value)})} 
+                        />
+                    </div>
+                </div>
+
+                {/* 保存ボタン */}
+                <div className="settings-action-area">
+                    <button onClick={handleSave} className="btn-primary">
+                        設定を保存して再計算
+                    </button>
+                </div>
             </div>
         </div>
     );
