@@ -88,7 +88,11 @@ body {
     font-weight: bold;
     cursor: pointer;
     width: 100%;
+    /* ★ 追加：幅の計算に余白と枠線を含める */
+    box-sizing: border-box; 
     
+    /* ★ 追加：横幅いっぱいに広がる性質を確定させる */
+    display: block;
 }
 
 .btn-history {
