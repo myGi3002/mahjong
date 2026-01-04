@@ -441,13 +441,19 @@ input[type="text"], input[type="number"] {
 
 .shizumi-flex-wrapper {
     display: flex;
-    justify-content: space-between; /* 3つのカラムを均等に配置 */
-    gap: 10px;
-    margin-top: 10px;
+    /* ★ 横スライドを許可 */
+    overflow-x: auto; 
+    /* ★ iOSでのスクロールを滑らかにする */
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px; /* スクロールバーが項目に被らないように余白を追加 */
+    justify-content: flex-start;/* 3つのカラムを均等に配置 */
+    gap: 15px;
+    /*margin-top: 10px;*/
 }
 
 .shizumi-column {
-    flex: 1; /* 各カラムを同じ幅に */
+    /* ★ 要素が画面幅に合わせて縮まないように固定幅を設定 */
+    flex: 0 0 160px; 
     background: #f9f9f9;
     padding: 10px 5px;
     border-radius: 8px;
