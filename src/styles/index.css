@@ -497,19 +497,23 @@ input[type="text"], input[type="number"] {
 
 .round-progress-grid {
     display: flex;
-    flex-wrap: wrap;
+    /* ★ 折り返さずに横一列に並べる */
+    flex-wrap: nowrap; 
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     gap: 15px;
+    padding-bottom: 15px;
     margin-top: 10px;
 }
 
 /* 回戦ごとの枠（ベース） */
 .round-progressing-block {
+    /* ★ 縮ませない。適切な横幅（例: 220px）を保持させる */
+    flex: 0 0 220px; 
     background: #f0f0f0;
     padding: 12px;
     border-radius: 8px;
-    min-width: 150px;
     border: 1px solid #ddd;
-    transition: all 0.3s ease;
 }
 
 /* ★ 回戦完了時：ボタン(recorded)と同じ配色を適用 */
