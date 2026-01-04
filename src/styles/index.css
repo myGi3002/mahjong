@@ -378,7 +378,7 @@ input[type="text"], input[type="number"] {
 .score-input-page .input-row {
     display: grid;
     /* 風(60px) / 名前(残り全部) / 入力欄(220px) */
-    grid-template-columns: 35x 1fr 100px;
+    grid-template-columns: 35px 1fr 100px;
     align-items: center;
     gap: 10px;
     margin-bottom: 20px;
