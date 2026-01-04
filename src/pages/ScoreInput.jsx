@@ -83,6 +83,11 @@ const ScoreInput = () => {
                             onKeyDown={e => handleKeyDown(e, i)} // ★ イベントを追加
                             className="large-score-input" 
                             placeholder="0"
+                            /* ★ 追加：iPhoneのキーボード右下の文字を調整 */
+                            enterKeyHint={i < 3 ? "next" : "done"}
+    
+                            /* ★ 追加：iPhoneで適切な数値キーボードを出す */
+                            inputMode="decimal"
                         />
                     </div>
                 ))}

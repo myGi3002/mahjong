@@ -1,13 +1,15 @@
 // src/pages/RoundPrepare.jsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { StorageService } from '../services/StorageService';
 import { generateOptimizedMultiRounds } from '../logic/matching';
+import html2canvas from 'html2canvas'; // ★ インポート
 
 const RoundPrepare = () => {
     const { filename } = useParams();
     const navigate = useNavigate();
+    const exportRef = useRef(null);
     const [tournament, setTournament] = useState(null);
     const [roundsPreview, setRoundsPreview] = useState([]);
     const [roundCount, setRoundCount] = useState(4);
@@ -16,7 +18,28 @@ const RoundPrepare = () => {
         const result = generateOptimizedMultiRounds(tData.players, tData.tournament_info.max_tables, count);
         setRoundsPreview(result);
     };
+    // ★ 画像出力関数
+    const handleExportImage = async () => {
+        if (!exportRef.current) return;
+        
+        const element = exportRef.current;
+        // 一時的にスライド設定を解除して全表示にする
+        element.classList.add('export-mode');
 
+        const canvas = await html2canvas(element, {
+            useCORS: true,
+            scale: 2, // 高画質化
+            backgroundColor: "#f2f2f2" // index.cssの--bgに合わせる
+        });
+
+        element.classList.remove('export-mode');
+
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+        const link = document.createElement('a');
+        link.download = `卓組み_${tournament.tournament_info.name}.jpg`;
+        link.href = dataUrl;
+        link.click();
+    };
     useEffect(() => {
         const tData = StorageService.getTournament(filename);
         if (tData) {
@@ -26,7 +49,7 @@ const RoundPrepare = () => {
             createPreview(tData, defaultCount);
         }
     }, [filename]);
-
+    
     // ★ 追加：座席の偏りをチェックする関数
     const getSeatBiasWarnings = () => {
         const biasMap = {}; // playerId -> [東の回数, 南の回数, 西の回数, 北の回数]
@@ -65,6 +88,11 @@ const RoundPrepare = () => {
     return (
         <div className="round-prepare">
             <h1 className="page-title">卓組み計画</h1>
+            <div className="card">
+                <button onClick={handleExportImage} className="btn-outline">
+                    📸 卓組み一覧を画像(JPG)で保存
+                </button>
+            </div>
             
             {/* 設定セクション */}
             <div className="card config-section">
@@ -101,34 +129,30 @@ const RoundPrepare = () => {
             )}
 
             {/* プレビューリスト */}
-            <div className="multi-round-list">
-                {roundsPreview?.map(round => (
-                    <div key={round.round_number} className="round-card">
-                        <h3 className="round-number-title">第 {round.round_number} 回戦</h3>
-                        <div className="preview-tables-grid">
-                            {round.tables.map(table => (
-                                <div key={table.table_id} className="table-mini-card">
-                                    <div className="table-mini-header">{table.table_id}卓</div>
-                                    <div className="player-names-list">
-                                        {/* ★ 修正：インデックス i を使って風を表示 */}
-                                        {table.player_ids.map((pid, i) => (
-                                            <div key={pid} className="player-tag-row">
-                                                <span className="mini-wind">{['東','南','西','北'][i]}</span>
-                                                <span className="mini-name">{playerMap[pid]?.name || "不明"}</span>
-                                            </div>
-                                        ))}
+            {/* ★ exportRefで囲む。ここが画像になる範囲 */}
+            <div ref={exportRef} className="export-container">
+                <div className="multi-round-list">
+                    {roundsPreview?.map(round => (
+                        <div key={round.round_number} className="round-card">
+                            <h3 className="round-number-title">第 {round.round_number} 回戦</h3>
+                            <div className="preview-tables-grid">
+                                {round.tables.map(table => (
+                                    <div key={table.table_id} className="table-mini-card">
+                                        <div className="table-mini-header">{table.table_id}卓</div>
+                                        <div className="player-names-list">
+                                            {table.player_ids.map((pid, i) => (
+                                                <div key={pid} className="player-tag-row">
+                                                    <span className="mini-wind">{['東','南','西','北'][i]}</span>
+                                                    <span className="mini-name">{playerMap[pid]?.name || "不明"}</span>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                        {round.resting_player_ids?.length > 0 && (
-                            <div className="resting-info">
-                                <span>休み: </span>
-                                {round.resting_player_ids.map(pid => playerMap[pid]?.name).join(', ')}
+                                ))}
                             </div>
-                        )}
-                    </div>
-                ))}
+                        </div>
+                    ))}
+                </div>
             </div>
 
             <div className="footer-controls sticky">

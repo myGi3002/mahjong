@@ -88,7 +88,11 @@ body {
     font-weight: bold;
     cursor: pointer;
     width: 100%;
+    /* ★ 追加：幅の計算に余白と枠線を含める */
+    box-sizing: border-box; 
     
+    /* ★ 追加：横幅いっぱいに広がる性質を確定させる */
+    display: block;
 }
 
 .btn-history {
@@ -144,7 +148,13 @@ body {
 }
 /* --- 入力フォーム --- */
 .input-group { margin-bottom: 20px; }
-.simple-label { display: block; font-size: 0.9em; color: #666; margin-bottom: 5px; }
+.simple-label {
+    display: block;
+    font-size: 18px;      /* ウマ設定と同じサイズ */
+    color: var(--primary); /* ウマ設定(フォーカス時)と同じ色 */
+    margin-bottom: 8px;
+    font-weight: bold;
+}
 input[type="text"], input[type="number"] {
     width: 100%;
     padding: 12px;
@@ -198,7 +208,22 @@ input[type="text"], input[type="number"] {
 }
 .cp_sl06_selectbar:before { left: 50%; } .cp_sl06_selectbar:after { right: 50%; }
 .cp_sl06:focus ~ .cp_sl06_selectbar:before, .cp_sl06:focus ~ .cp_sl06_selectbar:after { width: 50%; }
+/* 画像化する際のコンテナ */
+.export-container {
+    padding: 10px;
+    background: var(--bg);
+}
 
+/* ★ 重要：画像出力時はスライドを止めて全て展開する */
+.export-mode .round-progress-grid,
+.export-mode .shizumi-flex-wrapper {
+    flex-wrap: wrap !important;
+    overflow-x: visible !important;
+}
+
+.export-mode .round-progressing-block {
+    flex: 1 1 200px !important;
+}
 /* --- ランキング表 --- */
 .ranking-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
 .ranking-table th { color: var(--primary); border-bottom: 2px solid #eee; padding: 12px; font-weight: bold; }
@@ -368,7 +393,7 @@ input[type="text"], input[type="number"] {
 .score-input-page .input-row {
     display: grid;
     /* 風(60px) / 名前(残り全部) / 入力欄(220px) */
-    grid-template-columns: 50px 1fr 120px;
+    grid-template-columns: 45px 1fr 85px;
     align-items: center;
     gap: 10px;
     margin-bottom: 20px;
@@ -409,23 +434,41 @@ input[type="text"], input[type="number"] {
 /* --- フッターナビ --- */
 .footer-controls { margin-top: 30px; display: flex; flex-direction: column; gap: 15px; }
 .action-row { display: flex; gap: 10px; justify-content: center; }
+/* 持ち点・返し点エリアの余白 */
+.settings-extra-fields {
+    margin-top: 30px;
+    border-top: 1px solid #eee;
+    padding-top: 25px;
+}
 
+/* 修正：保存ボタンの上に大きな空白を作る */
+.settings-action-area {
+    margin-top: 40px; 
+    padding-top: 10px;
+}
 /* 沈みウマ設定の横並びレイアウト */
 .shizumi-container {
-    margin-top: 20px;
-    padding-top: 15px;
+    margin: 30px 0;
+    padding: 20px 0;
     border-top: 1px dashed #ccc;
+    border-bottom: 1px dashed #ccc;
 }
 
 .shizumi-flex-wrapper {
     display: flex;
-    justify-content: space-between; /* 3つのカラムを均等に配置 */
-    gap: 10px;
-    margin-top: 10px;
+    /* ★ 横スライドを許可 */
+    overflow-x: auto; 
+    /* ★ iOSでのスクロールを滑らかにする */
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px; /* スクロールバーが項目に被らないように余白を追加 */
+    justify-content: flex-start;/* 3つのカラムを均等に配置 */
+    gap: 15px;
+    /*margin-top: 10px;*/
 }
 
 .shizumi-column {
-    flex: 1; /* 各カラムを同じ幅に */
+    /* ★ 要素が画面幅に合わせて縮まないように固定幅を設定 */
+    flex: 0 0 160px; 
     background: #f9f9f9;
     padding: 10px 5px;
     border-radius: 8px;
@@ -469,19 +512,23 @@ input[type="text"], input[type="number"] {
 
 .round-progress-grid {
     display: flex;
-    flex-wrap: wrap;
+    /* ★ 折り返さずに横一列に並べる */
+    flex-wrap: nowrap; 
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     gap: 15px;
+    padding-bottom: 15px;
     margin-top: 10px;
 }
 
 /* 回戦ごとの枠（ベース） */
 .round-progressing-block {
+    /* ★ 縮ませない。適切な横幅（例: 220px）を保持させる */
+    flex: 0 0 220px; 
     background: #f0f0f0;
     padding: 12px;
     border-radius: 8px;
-    min-width: 150px;
     border: 1px solid #ddd;
-    transition: all 0.3s ease;
 }
 
 /* ★ 回戦完了時：ボタン(recorded)と同じ配色を適用 */
