@@ -106,11 +106,7 @@ const RoundPrepare = () => {
                 </div>
                 {isStarted && <p className="hint-text info">※大会開始後のため、現在の計画を表示しています</p>}
             </div>
-            <div className="card">
-                <button onClick={handleExportImage} className="btn-outline">
-                    📸 卓組み一覧を画像(JPG)で保存
-                </button>
-            </div>
+            
             {/* ★ 追加：警告表示エリア */}
             {seatWarnings.length > 0 && (
                 <div className="card alert-card">
