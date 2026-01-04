@@ -20,23 +20,20 @@ const RoundPrepare = () => {
     };
     // ★ 画像出力関数
     const handleExportImage = async () => {
-        if (!exportRef.current) return;
-        
         const element = exportRef.current;
-        // 一時的にスライド設定を解除して全表示にする
-        element.classList.add('export-mode');
+        // 画像生成時のみ一時的に表示させる
+        element.style.display = 'block';
 
         const canvas = await html2canvas(element, {
-            useCORS: true,
-            scale: 2, // 高画質化
-            backgroundColor: "#f2f2f2" // index.cssの--bgに合わせる
+            scale: 2, // 高解像度で出力
+            backgroundColor: "#ffffff",
         });
 
-        element.classList.remove('export-mode');
+        element.style.display = 'none'; // 生成後はまた隠す
 
-        const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
         const link = document.createElement('a');
-        link.download = `卓組み_${tournament.tournament_info.name}.jpg`;
+        link.download = `${tournament.tournament_info.name}_対戦表.jpg`;
         link.href = dataUrl;
         link.click();
     };
@@ -88,12 +85,7 @@ const RoundPrepare = () => {
     return (
         <div className="round-prepare">
             <h1 className="page-title">卓組み計画</h1>
-            <div className="card">
-                <button onClick={handleExportImage} className="btn-outline">
-                    📸 卓組み一覧を画像(JPG)で保存
-                </button>
-            </div>
-            
+                        
             {/* 設定セクション */}
             <div className="card config-section">
                 <div className="config-row">
@@ -114,7 +106,11 @@ const RoundPrepare = () => {
                 </div>
                 {isStarted && <p className="hint-text info">※大会開始後のため、現在の計画を表示しています</p>}
             </div>
-            
+            <div className="card">
+                <button onClick={handleExportImage} className="btn-outline">
+                    📸 卓組み一覧を画像(JPG)で保存
+                </button>
+            </div>
             {/* ★ 追加：警告表示エリア */}
             {seatWarnings.length > 0 && (
                 <div className="card alert-card">
@@ -129,32 +125,40 @@ const RoundPrepare = () => {
             )}
 
             {/* プレビューリスト */}
-            {/* ★ exportRefで囲む。ここが画像になる範囲 */}
-            <div ref={exportRef} className="export-container">
-                <div className="multi-round-list">
-                    {roundsPreview?.map(round => (
-                        <div key={round.round_number} className="round-card">
-                            <h3 className="round-number-title">第 {round.round_number} 回戦</h3>
-                            <div className="preview-tables-grid">
-                                {round.tables.map(table => (
-                                    <div key={table.table_id} className="table-mini-card">
-                                        <div className="table-mini-header">{table.table_id}卓</div>
-                                        <div className="player-names-list">
-                                            {table.player_ids.map((pid, i) => (
-                                                <div key={pid} className="player-tag-row">
-                                                    <span className="mini-wind">{['東','南','西','北'][i]}</span>
-                                                    <span className="mini-name">{playerMap[pid]?.name || "不明"}</span>
-                                                </div>
-                                            ))}
-                                        </div>
+            <div className="multi-round-list">
+                {roundsPreview?.map(round => (
+                    <div key={round.round_number} className="round-card">
+                        <h3 className="round-number-title">第 {round.round_number} 回戦</h3>
+                        <div className="preview-tables-grid">
+                            {round.tables.map(table => (
+                                <div key={table.table_id} className="table-mini-card">
+                                    <div className="table-mini-header">{table.table_id}卓</div>
+                                    <div className="player-names-list">
+                                        {/* ★ 修正：インデックス i を使って風を表示 */}
+                                        {table.player_ids.map((pid, i) => (
+                                            <div key={pid} className="player-tag-row">
+                                                <span className="mini-wind">{['東','南','西','北'][i]}</span>
+                                                <span className="mini-name">{playerMap[pid]?.name || "不明"}</span>
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
+                        {round.resting_player_ids?.length > 0 && (
+                            <div className="resting-info">
+                                <span>抜け番: </span>
+                                {round.resting_player_ids.map(pid => playerMap[pid]?.name).join(', ')}
+                            </div>
+                        )}
+                    </div>
+                ))}
             </div>
-
+            <div className="card">
+                <button onClick={handleExportImage} className="btn-primary">
+                    📸 共有用画像を生成して保存
+                </button>
+            </div>
             <div className="footer-controls sticky">
                 {/* ★ 大会が始まっていない場合のみ「確定」ボタンを表示 */}
                 {!isStarted ? (
@@ -169,6 +173,49 @@ const RoundPrepare = () => {
                         ダッシュボードに戻る
                     </button>
                 )}
+            </div>
+            
+
+            {/* ★ 画像出力専用の隠しレイアウトエリア */}
+            <div ref={exportRef} className="image-export-ui" style={{ display: 'none' }}>
+                <div className="export-header">
+                    <h1>{tournament.tournament_info.name} - 対戦表</h1>
+                    <p>全 {roundsPreview.length} 回戦 / 参加者 {tournament.players.length} 名</p>
+                </div>
+
+                {roundsPreview.map(round => (
+                    <div key={round.round_number} className="export-round-section">
+                        <h2 className="export-round-title">第 {round.round_number} 回戦</h2>
+                        <table className="export-table">
+                            <thead>
+                                <tr>
+                                    <th>卓</th>
+                                    <th>東家</th>
+                                    <th>南家</th>
+                                    <th>西家</th>
+                                    <th>北家</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {round.tables.map(table => (
+                                    <tr key={table.table_id}>
+                                        <td className="table-num">{table.table_id}</td>
+                                        {table.player_ids.map(pid => (
+                                            <td key={pid} className="player-name">
+                                                {playerMap[pid]?.name || "-"}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        {round.resting_player_ids?.length > 0 && (
+                            <div className="export-resting">
+                                休憩：{round.resting_player_ids.map(pid => playerMap[pid]?.name).join(', ')}
+                            </div>
+                        )}
+                    </div>
+                ))}
             </div>
         </div>
     );
