@@ -207,7 +207,7 @@ const RoundPrepare = () => {
                         </table>
                         {round.resting_player_ids?.length > 0 && (
                             <div className="export-resting">
-                                休憩：{round.resting_player_ids.map(pid => playerMap[pid]?.name).join(', ')}
+                                抜け番：{round.resting_player_ids.map(pid => playerMap[pid]?.name).join(', ')}
                             </div>
                         )}
                     </div>
