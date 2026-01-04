@@ -148,7 +148,13 @@ body {
 }
 /* --- 入力フォーム --- */
 .input-group { margin-bottom: 20px; }
-.simple-label { display: block; font-size: 0.9em; color: #666; margin-bottom: 5px; }
+.simple-label {
+    display: block;
+    font-size: 18px;      /* ウマ設定と同じサイズ */
+    color: var(--primary); /* ウマ設定(フォーカス時)と同じ色 */
+    margin-bottom: 8px;
+    font-weight: bold;
+}
 input[type="text"], input[type="number"] {
     width: 100%;
     padding: 12px;
@@ -413,12 +419,24 @@ input[type="text"], input[type="number"] {
 /* --- フッターナビ --- */
 .footer-controls { margin-top: 30px; display: flex; flex-direction: column; gap: 15px; }
 .action-row { display: flex; gap: 10px; justify-content: center; }
+/* 持ち点・返し点エリアの余白 */
+.settings-extra-fields {
+    margin-top: 30px;
+    border-top: 1px solid #eee;
+    padding-top: 25px;
+}
 
+/* 修正：保存ボタンの上に大きな空白を作る */
+.settings-action-area {
+    margin-top: 40px; 
+    padding-top: 10px;
+}
 /* 沈みウマ設定の横並びレイアウト */
 .shizumi-container {
-    margin-top: 20px;
-    padding-top: 15px;
+    margin: 30px 0;
+    padding: 20px 0;
     border-top: 1px dashed #ccc;
+    border-bottom: 1px dashed #ccc;
 }
 
 .shizumi-flex-wrapper {
