@@ -53,12 +53,30 @@ const ScoreInput = () => {
             }
         }
     };
-
+    
     const handleSave = () => {
         StorageService.submitScore(filename, parseInt(roundNum), parseInt(tableId), scores.map(s => Number(s)*100));
         navigate(`/t/${filename}/round/${roundNum}`);
     };
+    const handleToggleSign = (i) => {
+        const currentVal = scores[i]; // 現在のスコア配列から取得
+        let newVal = "";
 
+        if (currentVal === "" || currentVal === "-") {
+            newVal = "-"; // 空ならマイナス記号をセット
+        } else {
+            // 数値を反転させて文字列に戻す
+            newVal = (Number(currentVal) * -1).toString();
+        }
+
+        // 既存の入力ハンドラを呼び出してStateを更新
+        handleInput(i, newVal);
+
+        // ★ 重要：入力欄にフォーカスを戻す
+        if (inputRefs.current[i]) {
+            inputRefs.current[i].focus();
+        }
+    };
     const currentTotal = scores.reduce((a, b) => a + (Number(b) || 0), 0);
 
     return (
@@ -75,20 +93,27 @@ const ScoreInput = () => {
                                 {playerMap[playerIds[i]]?.name || "不明"}
                             </span>
                         </label>
-                        <input 
-                            type="number" 
-                            ref={el => inputRefs.current[i] = el} // ★ 参照を登録
-                            value={s} 
-                            onChange={e => handleInput(i, e.target.value)} 
-                            onKeyDown={e => handleKeyDown(e, i)} // ★ イベントを追加
-                            className="large-score-input" 
-                            placeholder="0"
-                            /* ★ 追加：iPhoneのキーボード右下の文字を調整 */
-                            enterKeyHint={i < 3 ? "next" : "done"}
-    
-                            /* ★ 追加：iPhoneで適切な数値キーボードを出す */
-                            inputMode="decimal"
-                        />
+                        <div className="score-input-wrapper">
+                            <input 
+                                type="number" 
+                                ref={el => inputRefs.current[i] = el}
+                                value={s} 
+                                onChange={e => handleInput(i, e.target.value)} 
+                                onKeyDown={e => handleKeyDown(e, i)}
+                                className="large-score-input" 
+                                placeholder="0"
+                                enterKeyHint={i < 3 ? "next" : "done"}
+                                inputMode="decimal"
+                            />
+                            {/* 符号反転ボタンを追加 */}
+                            <button 
+                                type="button" 
+                                className="btn-toggle-sign"
+                                onClick={() => handleToggleSign(i)} // イベントを紐付け
+                            >
+                                ±
+                            </button>
+                        </div>
                     </div>
                 ))}
                 <div className="total-display">合計: {currentTotal} / {targetTotal}</div>

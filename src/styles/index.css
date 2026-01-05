@@ -486,15 +486,50 @@ input[type="text"], input[type="number"] {
 .score-input-page .input-row {
     display: grid;
     /* 風(60px) / 名前(残り全部) / 入力欄(220px) */
-    grid-template-columns: 45px 1fr 85px;
+    grid-template-columns: 45px 1fr 135px;
     align-items: center;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     padding: 10px;
     background: #fcfcfc;
     border-radius: 8px;
+  
+}
+/* 入力欄とボタンをまとめるコンテナ */
+.score-input-wrapper {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    width: 100%;
+}
+/* 入力欄の微調整（ラージインプットをラッパー内で正しく表示） */
+.score-input-wrapper .large-score-input {
+    flex: 1;
+    min-width: 0; /* flex内の崩れ防止 */
+}
+/* 符号反転ボタンのスタイル */
+.btn-toggle-sign {
+    flex: 0 0 45px;
+    height: 45px;
+    background: var(--primary-light);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.1s;
+    padding: 0;
 }
 
+.btn-toggle-sign:active {
+    background: var(--primary);
+    color: white;
+    transform: scale(0.95);
+}
 .score-input-page label {
     display: contents; /* labelタグの影響を消してgridに従わせる */
 }
