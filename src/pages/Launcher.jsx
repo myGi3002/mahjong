@@ -69,7 +69,7 @@ const Launcher = () => {
                         <input type="number" value={maxTables} onChange={e => setMaxTables(e.target.value)} min="1" />
                     </div>
                     <FloatingLabelSelect 
-                        label="対局数設定" name="max_games" value={maxGames} 
+                        label="一人あたりの対局数" name="max_games" value={maxGames} 
                         onChange={e => setMaxGames(e.target.value)}
                         options={[{label:'フリー', value:'フリー'}, {label:'1戦', value:'1'}, {label:'2戦', value:'2'}, {label:'3戦', value:'3'}, {label:'4戦', value:'4'}]}
                     />

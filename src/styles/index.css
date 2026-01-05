@@ -94,7 +94,30 @@ body {
     /* ★ 追加：横幅いっぱいに広がる性質を確定させる */
     display: block;
 }
+.config-section {
+    padding: 20px;
+}
 
+/* 入力欄とボタンを横並びにするコンテナ */
+.config-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch; /* 高さを揃える */
+}
+
+.config-row input {
+    flex: 1;
+    height: 45px; /* 高さを少し出すとタップしやすい */
+}
+
+.config-row .btn-outline.small {
+    flex: 0 0 auto;
+    width: 100px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .btn-history {
     display: block;
     width: 100%;

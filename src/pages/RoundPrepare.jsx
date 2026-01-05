@@ -88,8 +88,8 @@ const RoundPrepare = () => {
                         
             {/* 設定セクション */}
             <div className="card config-section">
+                <label　className="simple-label">一人あたりの対局数：</label>
                 <div className="config-row">
-                    <label>一人あたりの対局数：</label>
                     <input 
                         type="number" 
                         value={roundCount} 
@@ -104,7 +104,7 @@ const RoundPrepare = () => {
                         <button className="btn-outline small" onClick={() => createPreview(tournament, roundCount)}>再構成</button>
                     )}
                 </div>
-                {isStarted && <p className="hint-text info">※大会開始後のため、現在の計画を表示しています</p>}
+                {isStarted && <p className="hint-text info" style={{ marginTop: '15px' }}>※大会開始後のため、現在の計画を表示しています</p>}
             </div>
             
             {/* ★ 追加：警告表示エリア */}
