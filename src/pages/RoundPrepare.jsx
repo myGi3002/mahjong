@@ -48,30 +48,59 @@ const RoundPrepare = () => {
     }, [filename]);
     
     // ★ 追加：座席の偏りをチェックする関数
-    const getSeatBiasWarnings = () => {
-        const biasMap = {}; // playerId -> [東の回数, 南の回数, 西の回数, 北の回数]
-        
+    const getValidationWarnings = () => {
+        const seatBiasMap = {}; // playerId -> [東, 南, 西, 北]
+        const opponentMap = {}; // playerId -> [対戦相手IDのリスト]
+        const warnings = [];
+        const windNames = ['東', '南', '西', '北'];
+
         roundsPreview.forEach(round => {
             round.tables.forEach(table => {
                 table.player_ids.forEach((pid, seatIdx) => {
-                    if (!biasMap[pid]) biasMap[pid] = [0, 0, 0, 0];
-                    biasMap[pid][seatIdx]++;
+                    // 1. 座席の偏りカウント
+                    if (!seatBiasMap[pid]) seatBiasMap[pid] = [0, 0, 0, 0];
+                    seatBiasMap[pid][seatIdx]++;
+
+                    // 2. 対戦相手の記録
+                    if (!opponentMap[pid]) opponentMap[pid] = [];
+                    const opponents = table.player_ids.filter(id => id !== pid);
+                    opponentMap[pid].push(...opponents);
                 });
             });
         });
 
-        const warnings = [];
-        const windNames = ['東', '南', '西', '北'];
-
-        Object.entries(biasMap).forEach(([pid, counts]) => {
+        // 座席の偏り警告の生成
+        Object.entries(seatBiasMap).forEach(([pid, counts]) => {
             counts.forEach((count, windIdx) => {
-                // 3回以上同じ風が重なった場合に警告
                 if (count >= 3) {
                     const playerName = playerMap[pid]?.name || "不明";
                     warnings.push(`${playerName} さんが ${windNames[windIdx]}家 を ${count}回 担当しています`);
                 }
             });
         });
+
+        // ★ 対戦相手の重複警告の生成
+        const reportedPairs = new Set(); // 重複表示（AさんとBさん、BさんとAさん）を防ぐ用
+        Object.entries(opponentMap).forEach(([pid, opponents]) => {
+            const counts = {};
+            opponents.forEach(oid => {
+                counts[oid] = (counts[oid] || 0) + 1;
+            });
+
+            Object.entries(counts).forEach(([oid, count]) => {
+                if (count >= 2) {
+                    // IDをソートして結合することで、(A,B) と (B,A) を同じペアとして扱う
+                    const pairKey = [pid, oid].sort().join('-');
+                    if (!reportedPairs.has(pairKey)) {
+                        const p1Name = playerMap[pid]?.name || "不明";
+                        const p2Name = playerMap[oid]?.name || "不明";
+                        warnings.push(`${p1Name} さんと ${p2Name} さんが ${count}回 同卓しています`);
+                        reportedPairs.add(pairKey);
+                    }
+                }
+            });
+        });
+
         return warnings;
     };
 
@@ -80,7 +109,7 @@ const RoundPrepare = () => {
     const playerMap = Object.fromEntries(tournament.players.map(p => [p.id, p]));
     // ★ 大会が既に開始されているか（ラウンドデータが存在するか）を判定
     const isStarted = tournament.rounds.length > 0;
-    const seatWarnings = getSeatBiasWarnings();
+    const validationWarnings = getValidationWarnings();
     
     return (
         <div className="round-prepare">
@@ -108,15 +137,18 @@ const RoundPrepare = () => {
             </div>
             
             {/* ★ 追加：警告表示エリア */}
-            {seatWarnings.length > 0 && (
+            {validationWarnings.length > 0 && (
                 <div className="card alert-card">
-                    <h3 className="alert-title">⚠️ 座席の偏り警告</h3>
+                    <h3 className="alert-title">⚠️ スケジュールの重複・偏り</h3>
                     <ul className="alert-list">
-                        {seatWarnings.map((msg, i) => (
+                        {validationWarnings.map((msg, i) => (
                             <li key={i}>{msg}</li>
                         ))}
                     </ul>
-                    <p className="hint-text small">気になる場合は「再構成」を押してください</p>
+                    <p className="hint-text small">
+                        ※人数や対局数の条件により、回避できない場合があります。<br/>
+                        気になる場合は「再構成」を押して、より良い組み合わせを探してください。
+                    </p>
                 </div>
             )}
 
