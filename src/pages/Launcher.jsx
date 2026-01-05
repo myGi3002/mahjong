@@ -55,6 +55,42 @@ const Launcher = () => {
         }
     };
 
+    const handleJsonImport = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+        // 1. テキストとして読み込み
+        const text = await file.text();
+        
+        // 2. JSONパース
+        const data = JSON.parse(text);
+
+        // 3. データの妥当性チェック
+        if (!data.tournament_info || !data.players) {
+            alert("大会データの形式が正しくありません。");
+            return;
+        }
+
+        // 4. 保存（ファイル名が被らないようにタイムスタンプを付与するなどの工夫も可）
+        const filename = file.name.replace('.json', '') || `import_${Date.now()}`;
+        StorageService.saveTournament(filename, data);
+
+        alert(`「${data.tournament_info.name}」をインポートしました。`);
+
+        // 5. 画面表示を更新（Stateを再取得する関数を呼ぶ）
+        // 例: loadHistory(); など
+        window.location.reload(); // 一番確実な再読み込み方法
+
+    } catch (err) {
+        console.error("Import error:", err);
+        alert("ファイルの読み込みに失敗しました。正しいJSONファイルを選択してください。");
+    }
+    
+    // 連続で同じファイルを選べるようにリセット
+    e.target.value = "";
+};
+
     return (
         <div className="launcher-page">
             <h1 className="page-title">大会を開く</h1>
@@ -121,6 +157,18 @@ const Launcher = () => {
                     </div>
                 </>
             )}
+            <div className="import-area">
+                <p className="hint-text">外部から保存したJSONファイルを取り込めます</p>
+                <label className="btn-secondary import-label">
+                    📥 JSONファイルを入力
+                    <input 
+                        type="file" 
+                        accept=".json" 
+                        onChange={handleJsonImport} 
+                        style={{ display: 'none' }} 
+                    />
+                </label>
+            </div>
         </div>
     );
 };

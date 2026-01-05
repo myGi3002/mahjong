@@ -97,7 +97,29 @@ body {
 .config-section {
     padding: 20px;
 }
+.import-area {
+    margin-top: 20px;
+    padding: 20px;
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    text-align: center;
+    background: #fdfdfd;
+}
 
+.import-label {
+    display: inline-block;
+    width: auto;
+    min-width: 200px;
+    cursor: pointer;
+    background: #555; /* btn-secondaryに近い色 */
+    padding: 12px 24px;
+    transition: all 0.2s;
+}
+
+.import-label:hover {
+    background: var(--primary); /* ホバー時にテーマカラーに */
+    transform: translateY(-2px);
+}
 /* 入力欄とボタンを横並びにするコンテナ */
 .config-row {
     display: flex;
