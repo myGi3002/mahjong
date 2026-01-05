@@ -117,7 +117,7 @@ const RoundPrepare = () => {
                         
             {/* 設定セクション */}
             <div className="card config-section">
-                <label　className="simple-label">一人あたりの対局数：</label>
+                <label className="simple-label">一人あたりの対局数：</label>
                 <div className="config-row">
                     <input 
                         type="number" 
