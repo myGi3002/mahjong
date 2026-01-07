@@ -7,6 +7,8 @@ export const calculatePoints = (rawScores, settings) => {
 
     // 2. ウマ（順位点）の決定
     let uma = [0, 0, 0, 0];
+
+    let rankingBonuses = [0, 0, 0, 0];
     
     if (settings.uma_type === "shizumi") {
         // 沈みウマ：start_pts以上の人数をカウント
@@ -17,14 +19,16 @@ export const calculatePoints = (rawScores, settings) => {
         // 0人や4人の場合は2人浮きを適用する等のガード処理
         const key = String(Math.max(1, Math.min(3, floatingCount)));
         uma = patterns[key];
+        rankingBonuses = [uma[0], uma[1], uma[2], uma[3]];
     } else {
         const umaMap = {
             "5-10": [10, 5, -5, -10], "10-20": [20, 10, -10, -20],
             "10-30": [30, 10, -10, -30], "20-30": [30, 20, -20, -30]
         };
         uma = umaMap[settings.uma_type] || [30, 10, -10, -30];
+        rankingBonuses = [uma[0] + oka, uma[1], uma[2], uma[3]];
     }
-    const rankingBonuses = [uma[0] + oka, uma[1], uma[2], uma[3]];
+    
     
     const basePoints = rawScores.map(s => (s - (settings.return_pts * 100)) / 1000);
     
