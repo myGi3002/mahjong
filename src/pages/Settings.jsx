@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { StorageService } from '../services/StorageService';
 import FloatingLabelSelect from '../components/FloatingLabelSelect';
+import styles from '../styles/pages/Settings.module.css';
 
 const Settings = () => {
     const { filename } = useParams();
@@ -18,6 +19,7 @@ const Settings = () => {
         StorageService.updateSettings(filename, settings);
         navigate(`/t/${filename}/dashboard`);
     };
+
     const handleShizumiChange = (count, rankIdx, val) => {
         const newShizumi = { ...settings.shizumi_uma };
         if (!newShizumi[count]) newShizumi[count] = [0, 0, 0, 0];
@@ -26,40 +28,40 @@ const Settings = () => {
     };
 
     return (
-        <div className="settings-page">
+        <div>
             <h1 className="page-title">詳細設定</h1>
             <div className="card">
-                {/* ウマ設定 (FloatingLabelSelect) */}
-                <FloatingLabelSelect 
-                    label="ウマ設定" 
-                    value={settings.uma_type} 
-                    onChange={e => setSettings({...settings, uma_type: e.target.value})}
+                {/* ウマ設定 */}
+                <FloatingLabelSelect
+                    label="ウマ設定"
+                    value={settings.uma_type}
+                    onChange={e => setSettings({ ...settings, uma_type: e.target.value })}
                     options={[
-                        {label:'5-10',value:'5-10'},
-                        {label:'10-20',value:'10-20'},
-                        {label:'10-30',value:'10-30'},
-                        {label:'20-30',value:'20-30'},
-                        {label:'沈みウマ',value:'shizumi'},
-                    ]} 
+                        { label: '5-10',    value: '5-10' },
+                        { label: '10-20',   value: '10-20' },
+                        { label: '10-30',   value: '10-30' },
+                        { label: '20-30',   value: '20-30' },
+                        { label: '沈みウマ', value: 'shizumi' },
+                    ]}
                 />
 
+                {/* 沈みウマ詳細設定 */}
                 {settings.uma_type === "shizumi" && (
-                    <div className="shizumi-container">
+                    <div className={styles.shizumiContainer}>
                         <h3 className="sub-title">沈みウマ詳細設定</h3>
-                        {/* ... (沈みウマの入力グリッド) */}
-                        <div className="shizumi-flex-wrapper">
+                        <div className={styles.shizumiFlexWrapper}>
                             {["1", "2", "3"].map(count => (
-                                <div key={count} className="shizumi-column">
-                                    <label className="shizumi-label">{count}人浮き</label>
-                                    <div className="shizumi-grid">
+                                <div key={count} className={styles.shizumiColumn}>
+                                    <label className={styles.shizumiLabel}>{count}人浮き</label>
+                                    <div className={styles.shizumiGrid}>
                                         {[0, 1, 2, 3].map(i => (
-                                            <div key={i} className="shizumi-input-group">
-                                                <span className="rank-label">{i + 1}位</span>
-                                                <input 
-                                                    type="number" 
-                                                    className="shizumi-small-input"
+                                            <div key={i} className={styles.shizumiInputGroup}>
+                                                <span className={styles.rankLabel}>{i + 1}位</span>
+                                                <input
+                                                    type="number"
+                                                    className={styles.shizumiSmallInput}
                                                     value={settings.shizumi_uma?.[count]?.[i] || 0}
-                                                    onChange={e => handleShizumiChange(count, i, e.target.value)} 
+                                                    onChange={e => handleShizumiChange(count, i, e.target.value)}
                                                 />
                                             </div>
                                         ))}
@@ -70,29 +72,28 @@ const Settings = () => {
                     </div>
                 )}
 
-                {/* 持ち点・返し点の設定エリア */}
-                <div className="settings-extra-fields">
+                {/* 持ち点・返し点 */}
+                <div className={styles.extraFields}>
                     <div className="input-group">
                         <label className="simple-label">持ち点</label>
-                        <input 
-                            type="number" 
-                            value={settings.start_pts} 
-                            onChange={e => setSettings({...settings, start_pts: Number(e.target.value)})} 
+                        <input
+                            type="number"
+                            value={settings.start_pts}
+                            onChange={e => setSettings({ ...settings, start_pts: Number(e.target.value) })}
                         />
                     </div>
-
                     <div className="input-group">
                         <label className="simple-label">返し点</label>
-                        <input 
-                            type="number" 
-                            value={settings.return_pts} 
-                            onChange={e => setSettings({...settings, return_pts: Number(e.target.value)})} 
+                        <input
+                            type="number"
+                            value={settings.return_pts}
+                            onChange={e => setSettings({ ...settings, return_pts: Number(e.target.value) })}
                         />
                     </div>
                 </div>
 
                 {/* 保存ボタン */}
-                <div className="settings-action-area">
+                <div className={styles.actionArea}>
                     <button onClick={handleSave} className="btn-primary">
                         設定を保存して再計算
                     </button>
@@ -101,4 +102,5 @@ const Settings = () => {
         </div>
     );
 };
+
 export default Settings;

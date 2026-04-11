@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { StorageService } from '../services/StorageService';
+import styles from '../styles/pages/PlayerDetail.module.css';
 
 const PlayerDetail = () => {
     const { filename, playerId } = useParams();
@@ -21,27 +22,23 @@ const PlayerDetail = () => {
 
     if (!data) return <div className="container">読み込み中...</div>;
 
-    const player = data.players.find(p => p.id === pid);
     const playerMap = Object.fromEntries(data.players.map(p => [p.id, p]));
 
-    // --- 成績集計ロジック ---
+    // 成績集計
     const stats = { ranks: [0, 0, 0, 0], history: [] };
     data.rounds.forEach(round => {
         round.tables.forEach(table => {
             if (table.player_ids.includes(pid) && table.is_recorded) {
                 const myIdx = table.player_ids.indexOf(pid);
                 const myScore = table.points[myIdx];
-                
-                // 着順計算（同点の場合は起親に近い方が上とする簡易版）
                 const rank = table.points.filter(s => s > myScore).length + 1;
                 stats.ranks[rank - 1]++;
-
                 stats.history.push({
                     round_number: round.round_number,
                     table_id: table.table_id,
-                    rank: rank,
+                    rank,
                     score: myScore,
-                    opponents: table.player_ids.filter(id => id !== pid)
+                    opponents: table.player_ids.filter(id => id !== pid),
                 });
             }
         });
@@ -54,10 +51,10 @@ const PlayerDetail = () => {
     };
 
     return (
-        <div className="player-detail-page">
+        <div>
             <h1 className="page-title">プレイヤー詳細</h1>
 
-            {/* 1. 名前変更セクション */}
+            {/* 名前変更 */}
             <div className="card">
                 <h3>プレイヤー情報</h3>
                 <div className="inline-form">
@@ -66,38 +63,50 @@ const PlayerDetail = () => {
                 </div>
             </div>
 
-            {/* 2. 着順分布セクション */}
+            {/* 着順分布 */}
             <div className="card">
                 <h3>着順分布</h3>
-                <div className="rank-dist">
+                <div className={styles.rankDist}>
                     {stats.ranks.map((count, i) => (
-                        <div key={i} className="rank-box">
-                            <div className="rank-label">{i + 1}位</div>
-                            <div className="rank-value">{count}回</div>
+                        <div key={i} className={styles.rankBox}>
+                            <div className={styles.rankLabel}>{i + 1}位</div>
+                            <div className={styles.rankValue}>{count}回</div>
                         </div>
                     ))}
                 </div>
             </div>
 
-            {/* 3. 対戦履歴セクション */}
+            {/* 対戦履歴 */}
             <div className="card">
                 <h3>対戦履歴</h3>
-                <table className="history-table">
+                <table className={styles.historyTable}>
                     <thead>
-                        <tr><th>回戦</th><th>着順</th><th>スコア</th><th>同卓プレイヤー</th></tr>
+                        <tr>
+                            <th>回戦</th>
+                            <th>着順</th>
+                            <th>スコア</th>
+                            <th>同卓プレイヤー</th>
+                        </tr>
                     </thead>
                     <tbody>
                         {stats.history.map((h, i) => (
                             <tr key={i}>
                                 <td>{h.round_number}</td>
-                                <td><span className={`rank-badge r${h.rank}`}>{h.rank}</span></td>
+                                <td>
+                                    <span className={`${styles.rankBadge} ${styles[`r${h.rank}`]}`}>
+                                        {h.rank}
+                                    </span>
+                                </td>
                                 <td>{h.score > 0 ? `+${h.score}` : h.score}</td>
-                                <td className="opponents-cell">
-                                    {h.opponents.map(oid => (
-                                        <Link key={oid} to={`/t/${filename}/player/${oid}`} className="opp-link">
-                                            {playerMap[oid]?.name}
-                                        </Link>
-                                    )).reduce((prev, curr) => [prev, ', ', curr])}
+                                <td>
+                                    {h.opponents.map((oid, idx) => (
+                                        <span key={oid}>
+                                            <Link to={`/t/${filename}/player/${oid}`} className={styles.oppLink}>
+                                                {playerMap[oid]?.name}
+                                            </Link>
+                                            {idx < h.opponents.length - 1 && ', '}
+                                        </span>
+                                    ))}
                                 </td>
                             </tr>
                         ))}

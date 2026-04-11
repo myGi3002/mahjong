@@ -1,0 +1,228 @@
+/* RoundPrepare.module.css */
+
+.page {
+    padding-bottom: 100px;
+}
+
+/* --- 設定セクション --- */
+.configSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+}
+
+.configRow {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+    width: 100%;
+}
+
+.configRow input {
+    flex: 1;
+    height: 45px;
+}
+
+.btnReconfig {
+    flex: 0 0 auto;
+    width: 100px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+/* --- 警告カード --- */
+.alertCard {
+    border: 2px solid var(--danger);
+    background: var(--danger-bg);
+    padding: 15px 20px;
+}
+
+.alertTitle {
+    color: var(--danger-text);
+    margin-top: 0;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.alertList {
+    margin: 10px 0;
+    padding-left: 20px;
+    color: #555;
+    font-size: 0.9em;
+    line-height: 1.6;
+}
+
+.alertList li {
+    margin-bottom: 4px;
+}
+
+/* --- ラウンドカード --- */
+.roundCard {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-left: 5px solid var(--primary);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.roundNumberTitle {
+    margin-top: 0;
+    color: var(--primary);
+    font-size: 1.2em;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.previewTablesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.tableMiniCard {
+    border: 1px solid #eee;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.tableMiniHeader {
+    background: var(--surface-dark);
+    font-size: 0.8em;
+    text-align: center;
+    padding: 4px;
+    font-weight: bold;
+}
+
+.playerNamesList {
+    display: flex;
+    flex-direction: column;
+    padding: 6px 10px;
+    gap: 2px;
+}
+
+.playerTagRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.playerTagRow:last-child {
+    border-bottom: none;
+}
+
+.miniWind {
+    font-size: 0.95em;
+    color: var(--text-placeholder);
+    font-weight: bold;
+    width: 1.2em;
+    text-align: center;
+}
+
+.miniName {
+    font-size: 1.05em;
+    color: var(--text-base);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.restingInfo {
+    margin-top: 15px;
+    font-size: 0.85em;
+    color: var(--text-faint);
+    font-style: italic;
+}
+
+/* --- stickyフッター --- */
+.stickyFooter {
+    position: sticky;
+    bottom: 0;
+    background: var(--bg);
+    padding: 15px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* --- 画像出力専用（非表示・html2canvas用） --- */
+.imageExportUi {
+    width: 600px;
+    padding: 40px;
+    background: white;
+    color: #000;
+}
+
+.exportHeader {
+    text-align: center;
+    border-bottom: 3px solid var(--primary);
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+}
+
+.exportRoundSection {
+    margin-bottom: 40px;
+}
+
+.exportRoundTitle {
+    background: var(--surface-dark);
+    padding: 10px;
+    font-size: 1.4em;
+    border-left: 8px solid var(--primary);
+}
+
+.exportTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    table-layout: fixed;
+}
+
+.exportTable th,
+.exportTable td {
+    border: 1px solid #ccc;
+    padding: 12px 5px;
+    text-align: center;
+    font-size: 1.1em;
+}
+
+.exportTable th {
+    background: var(--surface-muted);
+    font-weight: bold;
+}
+
+.exportTableNum {
+    background: var(--primary-light);
+    font-weight: bold;
+    width: 50px;
+}
+
+.exportPlayerName {
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.exportResting {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: var(--text-muted);
+    text-align: right;
+}

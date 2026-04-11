@@ -1,0 +1,133 @@
+/* Dashboard.module.css */
+
+/* --- ランキング表 --- */
+.rankingTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.rankingTable th {
+    color: var(--primary);
+    border-bottom: 2px solid #eee;
+    padding: 12px;
+    font-weight: bold;
+}
+
+.rankingTable td {
+    padding: 15px 10px;
+    border-bottom: 1px solid var(--border-muted);
+    text-align: center;
+    font-size: 1.1em;
+}
+
+.playerLink {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: bold;
+    border-bottom: 1px dashed var(--primary);
+}
+
+/* --- 紅白戦UI --- */
+.teamStatusBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #eee;
+}
+
+.teamScore {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.teamScoreRed   { color: var(--red-team); }
+.teamScoreWhite { color: var(--white-team); }
+
+.teamBadge {
+    padding: 4px 10px;
+    border-radius: 4px;
+    color: white;
+    font-size: 0.8em;
+    border: none;
+    cursor: pointer;
+}
+.teamBadgeRed   { background: var(--red-team); }
+.teamBadgeWhite { background: var(--white-team); }
+
+.btnShuffle {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: white;
+    cursor: pointer;
+    font-size: 0.85em;
+}
+
+/* --- 進行状況グリッド --- */
+.roundProgressGrid {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 15px;
+    padding-bottom: 15px;
+    margin-top: 10px;
+}
+
+.roundBlock {
+    flex: 0 0 220px;
+    background: var(--surface-dark);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.roundBlockFinished {
+    background: var(--success-light);
+    border: 2px solid var(--success);
+    box-shadow: 0 2px 8px rgba(82, 196, 26, 0.1);
+}
+
+.roundLinkTitle {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: var(--text-base);
+    text-decoration: none;
+}
+
+.roundLinkTitleFinished {
+    color: var(--success-text);
+}
+
+.finishedMark {
+    color: var(--success);
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.tableBtns {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.tableBtn {
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    text-decoration: none;
+    color: var(--text-base);
+}
+
+.tableBtnRecorded {
+    background: var(--success-light);
+    border-color: var(--success);
+    color: var(--success-text);
+}

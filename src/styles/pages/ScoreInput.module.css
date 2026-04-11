@@ -1,0 +1,113 @@
+/* ScoreInput.module.css */
+
+/* 注意書き */
+.alertText {
+    background: #fff3f3;
+    color: var(--danger-dark);
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 0.9em;
+    margin-bottom: 20px;
+}
+
+/* 点数入力の行レイアウト */
+.inputRow {
+    display: grid;
+    grid-template-columns: 45px 1fr 135px;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #fcfcfc;
+    border-radius: 8px;
+}
+
+/*
+  display:contents は「この要素自体を透明にして
+  子要素を直接親のgridに参加させる」という意味。
+  labelタグがgridの列を消費しないようにする。
+*/
+.inputRow label {
+    display: contents;
+}
+
+.wind {
+    color: var(--text-muted);
+    font-weight: bold;
+    text-align: center;
+}
+
+.playerNameLabel {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: var(--text-base);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 入力欄と符号反転ボタンをまとめるコンテナ */
+.scoreInputWrapper {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    width: 100%;
+}
+
+.scoreInputWrapper .largeScoreInput {
+    flex: 1;
+    min-width: 0;
+}
+
+/* 大きめの点数入力欄 */
+.largeScoreInput {
+    width: 100%;
+    max-width: 100%;
+    font-size: 20px;
+    padding: 8px;
+    text-align: right;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    -webkit-appearance: none;
+}
+
+.largeScoreInput:focus {
+    border-color: var(--primary);
+    outline: none;
+    background: #f0f8f0;
+}
+
+/* 符号反転ボタン */
+.btnToggleSign {
+    flex: 0 0 45px;
+    height: 45px;
+    background: var(--primary-light);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.1s;
+    padding: 0;
+}
+
+.btnToggleSign:active {
+    background: var(--primary);
+    color: white;
+    transform: scale(0.95);
+}
+
+/* 合計表示 */
+.totalDisplay {
+    text-align: right;
+    font-weight: bold;
+    margin: 20px 0;
+    font-size: 1.2em;
+    border-top: 2px solid #eee;
+    padding-top: 10px;
+}

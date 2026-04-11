@@ -1,0 +1,72 @@
+/* PlayerDetail.module.css */
+
+/* --- 着順分布 --- */
+.rankDist {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+}
+
+.rankBox {
+    text-align: center;
+    background: var(--surface-muted);
+    padding: 10px;
+    border-radius: 8px;
+    width: 20%;
+}
+
+.rankLabel {
+    font-size: 0.8em;
+    color: var(--text-muted);
+}
+
+.rankValue {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+/* --- 対戦履歴テーブル --- */
+.historyTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+
+.historyTable th {
+    border-bottom: 1px solid #eee;
+    padding: 8px;
+    text-align: center;
+}
+
+.historyTable td {
+    padding: 10px 5px;
+    border-bottom: 1px solid var(--surface-muted);
+    text-align: center;
+}
+
+/* --- 着順バッジ --- */
+.rankBadge {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+}
+.r1 { background: #ffd700; color: #333; }
+.r2 { background: #c0c0c0; color: #333; }
+.r3 { background: #cd7f32; }
+.r4 { background: var(--text-muted); }
+
+/* --- 対戦相手リンク --- */
+.oppLink {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9em;
+}
+.oppLink:hover {
+    text-decoration: underline;
+}

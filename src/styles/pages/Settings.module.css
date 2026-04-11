@@ -1,0 +1,78 @@
+/* Settings.module.css */
+
+/* --- 持ち点・返し点エリア --- */
+.extraFields {
+    margin-top: 30px;
+    border-top: 1px solid #eee;
+    padding-top: 25px;
+}
+
+/* --- 保存ボタンエリア --- */
+.actionArea {
+    margin-top: 40px;
+    padding-top: 10px;
+}
+
+/* --- 沈みウマ設定 --- */
+.shizumiContainer {
+    margin: 30px 0;
+    padding: 20px 0;
+    border-top: 1px dashed #ccc;
+    border-bottom: 1px dashed #ccc;
+}
+
+.shizumiFlexWrapper {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px;
+    justify-content: flex-start;
+    gap: 15px;
+}
+
+.shizumiColumn {
+    flex: 0 0 160px;
+    background: var(--surface-muted);
+    padding: 10px 5px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.shizumiLabel {
+    display: block;
+    font-weight: bold;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    color: var(--primary);
+}
+
+.shizumiGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.shizumiInputGroup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.rankLabel {
+    font-size: 0.8em;
+    color: var(--text-muted);
+    width: 25px;
+}
+
+/*
+  グローバルの input[type="number"] では width:100% が当たっているが、
+  CSS Modules のクラスセレクタはそれより詳細度が高いため
+  !important なしで上書きできる。
+*/
+.shizumiSmallInput {
+    width: 70px;
+    padding: 5px;
+    font-size: 14px;
+    text-align: center;
+}
