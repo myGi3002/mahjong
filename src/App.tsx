@@ -1,4 +1,4 @@
-// frontend/src/App.jsx
+// frontend/src/App.tsx
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Launcher from './pages/Launcher';
 import Dashboard from './pages/Dashboard';

@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { StorageService } from '../services/StorageService';
 import { generateOptimizedMultiRounds } from '../logic/matching';
 import html2canvas from 'html2canvas';
+import AlertCard from '../components/common/AlertCard';
 import styles from '../styles/pages/RoundPrepare.module.css';
 
 const RoundPrepare = () => {
@@ -22,10 +23,7 @@ const RoundPrepare = () => {
     const handleExportImage = async () => {
         const element = exportRef.current;
         element.style.display = 'block';
-        const canvas = await html2canvas(element, {
-            scale: 2,
-            backgroundColor: "#ffffff",
-        });
+        const canvas = await html2canvas(element, { scale: 2, backgroundColor: "#ffffff" });
         element.style.display = 'none';
         const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
         const link = document.createElement('a');
@@ -56,8 +54,7 @@ const RoundPrepare = () => {
                     if (!seatBiasMap[pid]) seatBiasMap[pid] = [0, 0, 0, 0];
                     seatBiasMap[pid][seatIdx]++;
                     if (!opponentMap[pid]) opponentMap[pid] = [];
-                    const opponents = table.player_ids.filter(id => id !== pid);
-                    opponentMap[pid].push(...opponents);
+                    opponentMap[pid].push(...table.player_ids.filter(id => id !== pid));
                 });
             });
         });
@@ -65,8 +62,7 @@ const RoundPrepare = () => {
         Object.entries(seatBiasMap).forEach(([pid, counts]) => {
             counts.forEach((count, windIdx) => {
                 if (count >= 3) {
-                    const playerName = playerMap[pid]?.name || "不明";
-                    warnings.push(`${playerName} さんが ${windNames[windIdx]}家 を ${count}回 担当しています`);
+                    warnings.push(`${playerMap[pid]?.name || "不明"} さんが ${windNames[windIdx]}家 を ${count}回 担当しています`);
                 }
             });
         });
@@ -74,16 +70,12 @@ const RoundPrepare = () => {
         const reportedPairs = new Set();
         Object.entries(opponentMap).forEach(([pid, opponents]) => {
             const counts = {};
-            opponents.forEach(oid => {
-                counts[oid] = (counts[oid] || 0) + 1;
-            });
+            opponents.forEach(oid => { counts[oid] = (counts[oid] || 0) + 1; });
             Object.entries(counts).forEach(([oid, count]) => {
                 if (count >= 2) {
                     const pairKey = [pid, oid].sort().join('-');
                     if (!reportedPairs.has(pairKey)) {
-                        const p1Name = playerMap[pid]?.name || "不明";
-                        const p2Name = playerMap[oid]?.name || "不明";
-                        warnings.push(`${p1Name} さんと ${p2Name} さんが ${count}回 同卓しています`);
+                        warnings.push(`${playerMap[pid]?.name || "不明"} さんと ${playerMap[oid]?.name || "不明"} さんが ${count}回 同卓しています`);
                         reportedPairs.add(pairKey);
                     }
                 }
@@ -130,21 +122,12 @@ const RoundPrepare = () => {
                 )}
             </div>
 
-            {/* 警告エリア */}
-            {validationWarnings.length > 0 && (
-                <div className={`card ${styles.alertCard}`}>
-                    <h3 className={styles.alertTitle}>⚠️ スケジュールの重複・偏り</h3>
-                    <ul className={styles.alertList}>
-                        {validationWarnings.map((msg, i) => (
-                            <li key={i}>{msg}</li>
-                        ))}
-                    </ul>
-                    <p className="hint-text small">
-                        ※人数や対局数の条件により、回避できない場合があります。<br />
-                        気になる場合は「再構成」を押して、より良い組み合わせを探してください。
-                    </p>
-                </div>
-            )}
+            {/* 警告エリア（AlertCardコンポーネントを使用） */}
+            <AlertCard
+                title="⚠️ スケジュールの重複・偏り"
+                messages={validationWarnings}
+                footer={`※人数や対局数の条件により、回避できない場合があります。\n気になる場合は「再構成」を押して、より良い組み合わせを探してください。`}
+            />
 
             {/* プレビューリスト */}
             {roundsPreview?.map(round => (
@@ -208,13 +191,7 @@ const RoundPrepare = () => {
                         <h2 className={styles.exportRoundTitle}>第 {round.round_number} 回戦</h2>
                         <table className={styles.exportTable}>
                             <thead>
-                                <tr>
-                                    <th>卓</th>
-                                    <th>東家</th>
-                                    <th>南家</th>
-                                    <th>西家</th>
-                                    <th>北家</th>
-                                </tr>
+                                <tr><th>卓</th><th>東家</th><th>南家</th><th>西家</th><th>北家</th></tr>
                             </thead>
                             <tbody>
                                 {round.tables.map(table => (
