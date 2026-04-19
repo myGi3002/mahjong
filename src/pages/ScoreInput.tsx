@@ -40,7 +40,7 @@ const ScoreInput = () => {
         newScores[idx] = val;
         const filled = newScores.filter((s, i) => i !== 3 && s !== '');
         if (filled.length === 3) {
-            const sum = filled.reduce((acc, s) => acc + Number(s), 0);
+            const sum = filled.reduce((acc: number, s) => acc + Number(s), 0);
             newScores[3] = targetTotal - sum;
         }
         setScores(newScores);
@@ -79,7 +79,7 @@ const ScoreInput = () => {
         inputRefs.current[i]?.focus();
     };
 
-    const currentTotal = scores.reduce((a, b) => a + (Number(b) || 0), 0);
+    const currentTotal = scores.reduce((a:number, b) => a + (Number(b) || 0), 0);
 
     return (
         <div>
