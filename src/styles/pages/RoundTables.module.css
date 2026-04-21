@@ -1,0 +1,131 @@
+/* RoundTables.module.css */
+
+/* --- 回戦タブ --- */
+.selectorTabs {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+}
+
+.tabBtn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.tabBtnActive {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    font-weight: bold;
+}
+
+/* --- ナビゲーション --- */
+.roundNav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.roundTitle {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: var(--text-base);
+}
+
+.navArrow {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1.5em;
+    border: none;
+    cursor: pointer;
+}
+
+.navArrow:disabled {
+    background: #eee;
+    color: #ccc;
+    pointer-events: none;
+}
+
+/* --- 卓グリッド --- */
+.tablesGrid {
+    display: grid;
+    gap: 20px;
+}
+
+.tableCardLink {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.tableCard {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 2px solid transparent;
+}
+
+.tableCardRecorded {
+    border-color: var(--primary);
+    background: #f9fff9;
+}
+
+.tableHeader {
+    background: #eee;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.tableCardRecorded .tableHeader {
+    background: var(--primary);
+    color: white;
+}
+
+/* --- 座席リスト --- */
+.seatList {
+    padding: 10px 20px;
+}
+
+.seatRow {
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-light);
+    gap: 10px;
+}
+
+.wind {
+    color: var(--text-muted);
+    font-weight: bold;
+    text-align: center;
+}
+
+.playerName {
+    text-align: left;
+    font-size: 1.05em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.playerScore {
+    min-width: 60px;
+    text-align: right;
+    font-weight: bold;
+    color: var(--primary);
+    background: var(--primary-light);
+    padding: 4px 10px;
+    border-radius: 6px;
+}

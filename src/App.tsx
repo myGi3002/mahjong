@@ -1,4 +1,4 @@
-// frontend/src/App.jsx
+// frontend/src/App.tsx
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Launcher from './pages/Launcher';
 import Dashboard from './pages/Dashboard';
@@ -7,7 +7,7 @@ import RoundPrepare from './pages/RoundPrepare'; // 新しく追加
 import RoundTables from './pages/RoundTables';
 import ScoreInput from './pages/ScoreInput';
 import Settings from './pages/Settings';
-import './styles/index.css';
+import './styles/global.css';
 
 /**
  * 麻雀大会マネージャー メインルーティング設定
