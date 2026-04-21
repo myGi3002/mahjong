@@ -9,10 +9,12 @@
 
 | 項目 | 内容 |
 |------|------|
-| フレームワーク | React 18 |
-| ビルドツール | Vite |
-| ルーティング | React Router v6 |
+| フレームワーク | React 19 |
+| 言語 | TypeScript |
+| ビルドツール | Vite（rolldown-vite） |
+| ルーティング | React Router v7 |
 | データ保存 | localStorage（サーバー不要） |
+| スタイル | CSS Modules + global.css |
 | その他ライブラリ | html2canvas（対戦表の画像出力） |
 
 ---
@@ -35,30 +37,53 @@
 
 ```
 src/
-├── App.jsx                  # ルーティング定義
-├── main.jsx                 # Reactエントリーポイント
+├── App.tsx                      # ルーティング定義
+├── main.tsx                     # Reactエントリーポイント
 │
-├── pages/                   # 各画面のコンポーネント
-│   ├── Launcher.jsx         # ホーム（大会の作成・選択）
-│   ├── Dashboard.jsx        # 大会ダッシュボード
-│   ├── RoundPrepare.jsx     # 卓組みプレビュー・確定
-│   ├── RoundTables.jsx      # ラウンド卓一覧
-│   ├── ScoreInput.jsx       # 点数入力
-│   ├── PlayerDetail.jsx     # プレイヤー詳細
-│   └── Settings.jsx         # 詳細設定
+├── types/
+│   └── index.ts                 # プロジェクト全体の型定義
 │
-├── components/              # 再利用可能なUIコンポーネント
-│   └── FloatingLabelSelect.jsx  # フローティングラベル付きセレクトボックス
+├── pages/                       # 各画面のコンポーネント
+│   ├── Launcher.tsx             # ホーム（大会の作成・選択）
+│   ├── Dashboard.tsx            # 大会ダッシュボード
+│   ├── RoundPrepare.tsx         # 卓組みプレビュー・確定
+│   ├── RoundTables.tsx          # ラウンド卓一覧
+│   ├── ScoreInput.tsx           # 点数入力
+│   ├── PlayerDetail.tsx         # プレイヤー詳細
+│   └── Settings.tsx             # 詳細設定
 │
-├── services/                # データ操作ロジック
-│   └── StorageService.js    # localStorageとのやり取りをまとめたサービス層
+├── components/                  # 再利用可能なUIコンポーネント
+│   ├── FloatingLabelSelect.tsx  # フローティングラベル付きセレクトボックス
+│   ├── common/
+│   │   └── AlertCard.tsx        # 警告カード（汎用）
+│   └── dashboard/               # Dashboard専用コンポーネント
+│       ├── RoundProgressGrid.tsx  # 対局進行状況グリッド
+│       ├── PlayerRegisterForm.tsx # 参加者登録フォーム
+│       └── RankingTable.tsx       # ランキングテーブル（紅白戦UI含む）
 │
-├── logic/                   # ビジネスロジック
-│   ├── matching.js          # 卓組み最適化アルゴリズム
-│   └── calc.js              # 点数計算・スコア再集計
+├── services/
+│   └── StorageService.ts        # localStorageとのやり取りをまとめたサービス層
 │
-└── styles/                  # スタイルシート
-    └── index.css            # 全スタイルを管理（整理予定）
+├── logic/
+│   ├── matching.ts              # 卓組み最適化アルゴリズム
+│   └── calc.ts                  # 点数計算・スコア再集計
+│
+└── styles/
+    ├── global.css               # 変数・body・共通コンポーネント（App.tsxでimport）
+    ├── components/
+    │   ├── FloatingLabelSelect.module.css
+    │   ├── common/
+    │   │   └── AlertCard.module.css
+    │   └── dashboard/
+    │       ├── RoundProgressGrid.module.css
+    │       └── RankingTable.module.css
+    └── pages/
+        ├── Launcher.module.css
+        ├── RoundPrepare.module.css
+        ├── RoundTables.module.css
+        ├── ScoreInput.module.css
+        ├── PlayerDetail.module.css
+        └── Settings.module.css
 ```
 
 ---
@@ -127,7 +152,7 @@ src/
 | フィールド | 説明 |
 |-----------|------|
 | `scores` | 素点（実際の点棒の数。例：35,000点 → 35000） |
-| `points` | 順位点（ウマ・オカ込みの最終得点。`calc.js` が計算） |
+| `points` | 順位点（ウマ・オカ込みの最終得点。`calc.ts` が計算） |
 | `is_recorded` | `true` になると「入力済み」扱いになりスコアに反映される |
 | `total_score` | 全対局の `points` の合計（保存のたびに再計算） |
 | `games_played` | 消化局数（`is_recorded` な卓の数） |
@@ -136,13 +161,21 @@ src/
 
 ## 各ファイルの役割
 
-### `App.jsx`
-React Router を使ったルーティングの定義ファイルです。
-どのURLにどのページコンポーネントを表示するかをここで管理します。
+### `types/index.ts`
+プロジェクト全体で使うデータ型の定義ファイルです。
+`localStorage` に保存されるJSONの構造と一致しています。
+
+主な型：`Tournament`・`Player`・`Round`・`Table`・`TournamentSettings`・`UmaType`・`TournamentMode`・`MaxGames`・`Team`
 
 ---
 
-### `pages/Launcher.jsx`
+### `App.tsx`
+React Router を使ったルーティングの定義ファイルです。
+`global.css` のimportもここで行います。
+
+---
+
+### `pages/Launcher.tsx`
 アプリのホーム画面です。以下の機能を持ちます。
 
 - 大会名・使用卓数・対局数・モード（通常/紅白戦）を設定して新規大会を作成
@@ -152,29 +185,27 @@ React Router を使ったルーティングの定義ファイルです。
 
 ---
 
-### `pages/Dashboard.jsx`
-大会の中心となる画面です。以下の情報をまとめて確認できます。
+### `pages/Dashboard.tsx`
+大会の中心となる画面です。データ取得・更新のロジックを担当し、表示は各コンポーネントに委譲します。
 
-- 対局の進行状況（卓ごとの入力済み/未入力）
-- 現在のランキング（`total_score` 降順）
-- 参加者の追加（大会開始前のみ）
-- 紅白戦モードのチームスコアとシャッフルボタン
-- 卓組み確認・詳細設定・JSON出力へのリンク
+- `RoundProgressGrid`：対局の進行状況（卓ごとの入力済み/未入力）
+- `PlayerRegisterForm`：参加者の追加（大会開始前のみ）
+- `RankingTable`：現在のランキング（`total_score` 降順）・紅白戦UI
 
 ---
 
-### `pages/RoundPrepare.jsx`
+### `pages/RoundPrepare.tsx`
 卓組みのプレビューと確定を行う画面です。
 
-- `matching.js` を使って最適化された卓組みを生成・表示
-- 座席（東南西北）の偏りや同卓回数の重複を警告
+- `matching.ts` を使って最適化された卓組みを生成・表示
+- 座席（東南西北）の偏りや同卓回数の重複を `AlertCard` で警告
 - 「再構成」ボタンで別の組み合わせを試せる
 - 対局開始後は編集不可（確認のみ）
 - 対戦表をJPEG画像として出力できる（html2canvas使用）
 
 ---
 
-### `pages/RoundTables.jsx`
+### `pages/RoundTables.tsx`
 ラウンドごとの卓一覧画面です。
 
 - 回戦切り替えタブと左右ナビゲーション
@@ -183,7 +214,7 @@ React Router を使ったルーティングの定義ファイルです。
 
 ---
 
-### `pages/ScoreInput.jsx`
+### `pages/ScoreInput.tsx`
 1卓分の点数を入力する画面です。
 
 - 100点単位で入力（例：30,000点 → 300）
@@ -196,7 +227,7 @@ React Router を使ったルーティングの定義ファイルです。
 
 ---
 
-### `pages/PlayerDetail.jsx`
+### `pages/PlayerDetail.tsx`
 プレイヤーごとの詳細画面です。
 
 - 名前の変更
@@ -205,7 +236,7 @@ React Router を使ったルーティングの定義ファイルです。
 
 ---
 
-### `pages/Settings.jsx`
+### `pages/Settings.tsx`
 大会の詳細設定画面です。設定保存時に `runRecalculation()` が走り、全スコアが再計算されます。
 
 - ウマ設定（5-10 / 10-20 / 10-30 / 20-30 / 沈みウマ）
@@ -214,26 +245,45 @@ React Router を使ったルーティングの定義ファイルです。
 
 ---
 
-### `components/FloatingLabelSelect.jsx`
+### `components/FloatingLabelSelect.tsx`
 フローティングラベル付きのセレクトボックスコンポーネントです。
 選択状態になるとラベルが上に移動するアニメーション付きUIを提供します。
-`Launcher.jsx`（対局数・モード選択）と `Settings.jsx`（ウマ設定）で使用しています。
+`Launcher.tsx`（対局数・モード選択）と `Settings.tsx`（ウマ設定）で使用しています。
 
-```jsx
+```tsx
 <FloatingLabelSelect
   label="ラベル名"
   name="field_name"
   value={value}
-  onChange={e => setValue(e.target.value)}
+  onChange={(e) => setValue(e.target.value as SomeType)}
   options={[{ label: '表示名', value: '値' }]}
 />
 ```
 
 ---
 
-### `services/StorageService.js`
+### `components/common/AlertCard.tsx`
+警告・注意事項を表示する汎用カードコンポーネントです。
+`messages` が空の場合は何も表示しません。
+現在は `RoundPrepare.tsx` の重複・偏り警告で使用しています。
+
+---
+
+### `components/dashboard/RoundProgressGrid.tsx`
+ダッシュボードの対局進行状況グリッドです。
+各回戦の卓ボタンを横スクロールで表示します。
+
+### `components/dashboard/PlayerRegisterForm.tsx`
+参加者登録フォームです。
+大会開始後（`roundCount > 0` かつフリーでない）はロックされます。
+
+### `components/dashboard/RankingTable.tsx`
+ランキングテーブルです。紅白戦モードのスコアバー・シャッフルボタン・チームバッジも含みます。
+
+---
+
+### `services/StorageService.ts`
 `localStorage` へのデータ操作をすべてまとめたサービス層です。
-各ページコンポーネントはこのサービスを通じてデータを読み書きします。
 
 **重要な設計方針：保存は必ず `saveTournament()` を経由する。**
 `saveTournament()` は内部で `runRecalculation()` を呼び出すため、
@@ -242,7 +292,7 @@ React Router を使ったルーティングの定義ファイルです。
 | メソッド | 説明 |
 |---------|------|
 | `listTournaments()` | `mah_tournament_` プレフィックスのキーを全件取得して大会名一覧を返す |
-| `getTournament(name)` | 指定した大会データをJSONパースして返す |
+| `getTournament(name)` | 指定した大会データをJSONパースして返す（存在しない場合は `null`） |
 | `saveTournament(name, data)` | `runRecalculation()` を通してからlocalStorageに保存 |
 | `createTournament(name, maxTables, maxGames, mode)` | 初期データを生成して保存し、大会名を返す |
 | `addPlayer(name, playerName)` | プレイヤーを追加（IDは既存の最大値+1） |
@@ -250,7 +300,6 @@ React Router を使ったルーティングの定義ファイルです。
 | `shuffleTeams(name)` | プレイヤーをランダムに並べてred/whiteを交互に割り当て |
 | `updatePlayerName(name, playerId, newName)` | プレイヤー名を変更 |
 | `saveAllRounds(name, newRounds)` | 卓組みを全ラウンド一括保存（既存ラウンドに追記） |
-| `startRound(name, tables, restingPlayerIds)` | 1ラウンド分の卓組みを追加（現在は未使用の可能性あり） |
 | `submitScore(name, roundNum, tableId, rawScores)` | 素点を保存して `is_recorded = true` にする |
 | `updateSettings(name, newSettings)` | 設定を更新（全スコアが再計算される） |
 | `exportJSON(name)` | 大会データをJSONファイルとしてダウンロード |
@@ -258,53 +307,37 @@ React Router を使ったルーティングの定義ファイルです。
 
 ---
 
-### `logic/calc.js`
+### `logic/calc.ts`
 素点から順位点を計算し、全対局を再集計するモジュールです。
-Python で書かれた `calc.py` をJSに移植したものです。
+Python で書かれた `calc.py` をTypeScriptに移植したものです。
 
-#### `calculatePoints(rawScores, settings)`
-1卓分の素点配列（例：`[35000, 28000, 22000, 15000]`）を受け取り、
-順位点の配列（例：`[42.3, 12.1, -10.5, -43.9]`）を返します。
+#### `calculatePoints(rawScores: number[], settings: TournamentSettings): number[]`
+1卓分の素点配列を受け取り、順位点の配列を返します。
 
-**計算の流れ：**
-
+計算の流れ：
 1. **オカの計算**：`(返し点 - 持ち点) × 4 ÷ 10` を1位に加算
-2. **ウマの決定**：`uma_type` に応じた順位ボーナスを決定
-   - 沈みウマの場合は「持ち点以上のプレイヤー数（浮き人数）」で分岐し、`shizumi_uma` の設定を参照
+2. **ウマの決定**：`uma_type` に応じた順位ボーナスを決定（沈みウマは浮き人数で分岐）
 3. **素点の変換**：`(素点 - 返し点×100) ÷ 1000` で持ち点基準の増減に変換
-4. **順位付けと得点確定**：降順ソートして順位ボーナスを加算。同点の場合は該当する順位点の平均を配分
+4. **順位付けと得点確定**：同点の場合は該当する順位点の平均を配分
 
-#### `runRecalculation(data)`
+#### `runRecalculation(data: Tournament): Tournament`
 大会データ全体を受け取り、全ラウンド・全卓を再集計します。
-
-- まず全プレイヤーの `total_score` と `games_played` を0にリセット
-- `is_recorded === true` の卓だけを対象に `calculatePoints()` を呼び出す
-- 最新の設定（ウマ・持ち点等）で計算し直すため、設定変更後も正確なスコアが保たれる
+全プレイヤーのスコアをリセットしてから `is_recorded === true` の卓だけを対象に再計算します。
 
 ---
 
-### `logic/matching.js`
+### `logic/matching.ts`
 卓組みを自動生成する最適化アルゴリズムです。
 
-#### `generateOptimizedMultiRounds(players, maxTables, targetGamesPerPerson)`
+#### `generateOptimizedMultiRounds(players, maxTables, targetGamesPerPerson): Round[]`
 **山登り法（Hill Climbing）** を使ってペナルティを最小化した卓組みを生成します。
 
-**処理の流れ：**
-
-```
-1. 初期スケジュール生成 (createInitialSchedule)
-   └─ 各プレイヤーが何回戦に出場するかをランダムに割り当て（抜け番を先に確定）
-   └─ 割り当てに基づいてランダムな初期卓組みを生成
-
-2. 山登り法による最適化（最大5000回試行）
-   └─ 同一回戦内でランダムに2人を選んで入れ替えてみる (attemptSwap)
-   └─ ペナルティが改善・同等なら採用、悪化なら元に戻す (undoSwap)
-   └─ ペナルティが0になれば即終了
-
+処理の流れ：
+1. 初期スケジュール生成（抜け番を先に確定してからランダムな卓組みを生成）
+2. 山登り法による最適化（最大5000回試行、同一回戦内で2人をスワップ）
 3. 最もペナルティの低かった組み合わせを返す
-```
 
-**ペナルティの重み（`calculateTotalPenalty`）：**
+ペナルティの重み：
 
 | 条件 | ペナルティ |
 |------|-----------|
@@ -324,12 +357,15 @@ npm run dev
 
 # ビルド
 npm run build
+
+# 型チェック
+npx tsc --noEmit
 ```
 
 ---
 
 ## 今後の予定
 
-- [ ] CSSファイルをページ・コンポーネント単位に分割してリファクタリング
-- [ ] レイアウトの調整・UI改善
-- [ ] TypeScript化の検討
+- [ ] フェーズ4：堅牢化（バリデーション・エラーハンドリング・Error Boundary）
+- [ ] フェーズ5：テスト（Vitest による calc.ts・matching.ts の単体テスト）
+- [ ] フェーズ6：発展（Zustand・バックエンド化・CI/CD）
