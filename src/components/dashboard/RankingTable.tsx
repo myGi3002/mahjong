@@ -1,5 +1,5 @@
 // src/components/dashboard/RankingTable.tsx
-import React from 'react';
+// import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../../styles/components/dashboard/RankingTable.module.css';
 import type { Player, Round, TournamentMode } from '../../types';

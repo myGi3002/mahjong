@@ -1,5 +1,5 @@
 // src/pages/RoundTables.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { StorageService } from '../services/StorageService';
 import styles from '../styles/pages/RoundTables.module.css';

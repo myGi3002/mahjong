@@ -15,7 +15,7 @@ import './styles/global.css';
  */
 function App() {
     return (
-        <BrowserRouter>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
             {/* 全ページ共通のレイアウトコンテナ */}
             <div className="container">
                 <Routes>
