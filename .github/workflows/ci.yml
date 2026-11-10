@@ -36,29 +36,3 @@ jobs:
 
       - name: ビルド
         run: npm run build
-
-      # ----- ここから追加 -----
-      - name: SPA 用の 404.html を用意
-        run: cp dist/index.html dist/404.html
-
-      - name: ビルド結果をアップロード
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: dist
-
-  # ---------- CD：公開 ----------
-  deploy:
-    needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: GitHub Pages にデプロイ
-        id: deployment
-        uses: actions/deploy-pages@v5
